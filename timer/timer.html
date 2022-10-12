@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <link rel="icon" href="favicon.ico" id="favicon">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <title>timer</title>
+</head>
+<body>
+<header id="header">
+  <div class="header-inner">
+    <h2>WORKS</h2>
+  </div>
+
+    <script>
+      'use strict';
+
+        var timer1; 
+        function cntStart(){
+          document.timer.elements[2].disabled=true;
+          timer1=setInterval("countDown()",1000);
+        }
+        
+        function cntStop(){
+          document.timer.elements[2].disabled=false;
+          clearInterval(timer1);
+          bg_stop();
+          stop() ;
+          clear();
+        }
+        
+        function countDown(){
+          var min=document.timer.elements[0].value;
+          var sec=document.timer.elements[1].value;
+          if( (min=="") && (sec=="") ){
+            alert("タイマー時間を入力してください！");
+            reSet();
+          }
+          else{
+            if (min=="") min=0;
+            min=parseInt(min);
+            if (sec=="") sec=0;
+            sec=parseInt(sec);
+            tmWrite(min*60+sec-1);
+          }
+        }
+        
+        function tmWrite(int){
+          int=parseInt(int);
+          if (int<=0){
+            reSet();
+            play();
+            bg_start();
+          }
+          else{
+            document.timer.elements[0].value=Math.floor(int/60);
+            document.timer.elements[1].value=int % 60;
+          }
+        }
+    
+        function reSet(){
+          document.timer.elements[0].value="0";
+          document.timer.elements[1].value="0";
+          document.timer.elements[2].disabled=false;
+          clearInterval(timer1);
+        }  
+
+        function clear() {
+          var form1 = document.getElementById('min');
+          var form2 = document.getElementById('sec');
+          form1.value = '';
+          form2.value = '';
+        }
+
+        var music = new Audio(); 
+        
+        music.src = "./alarm.mp3"; 
+        music.volume = 0.7;
+        
+        function play() { 
+          music.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          music.play();
+        }
+
+        function stop() { 
+          music.pause();
+        }
+
+        var timerArray = new Array();
+        function bg_start() {
+          timerArray.push(setInterval(function () {
+            this.backgroundColor =
+            this.backgroundColor == "fuchsia" ? "white" : "fuchsia";
+            }.bind(document.getElementById('body').style), 650 ));
+            bgTimerCount();
+        }
+
+        function bg_stop() {
+          if (timerArray.length > 0) {
+          clearInterval(timerArray .shift());
+          }
+          bgTimerCount();
+        }
+
+        function bgTimerCount() {
+          document.getElementById('body').style.backgroundColor = timerArray .length;
+        }
+
+    </script>
+    <style>
+      body {
+        margin: 0;
+        text-align: center;
+      }
+      #body {
+        width: 100%;
+        height: 500px;
+        padding-top: 8%;
+        background-color: #ffffff;
+      }
+      .contents{
+        display: flex;
+        justify-content: center;
+        width: 600px;
+        min-height: 350px;
+        color : #ffffff;
+        margin-right: auto;
+        margin-left : auto;
+        background-color :#000000;
+        font-size: 1.6em;
+        line-height: 1.5em;
+        border-radius: 15px;
+        border: solid 5px #d77f9b;
+        word-break: break-word;
+      }
+      #min,#sec{
+        width: 250px;
+        height: 120px;
+        justify-content: space-around;
+        color: #535353;
+        font-size: 50px;
+        font-weight: bold;
+        margin-top: 60px;
+        margin-bottom: 20px;
+        margin-right: 15px;
+      }
+      #start,#stop{
+        width: 200px;
+        height: 50px;
+        justify-content: space-around;
+        color: #535353;
+        font-size: 30px;
+        margin-top: 70px;
+        margin-bottom: 10px;
+      }
+      input[type="text"]:hover {
+        border: solid 2px #d77f9b;
+        box-shadow    : 1px 1px 5px #e9e6e6; 
+      }
+      input[type="button"]:hover {
+        border: solid 2px #d77f9b;
+        box-shadow    : 1px 1px 5px #e9e6e6; 
+      }
+      ::placeholder {
+        font-size: 0.7em;
+        color: #aaa;
+      }
+      #header,#footer {
+        box-sizing: border-box;
+        width: 100%;
+        background-color: #000000;
+      }
+      .header-inner {
+        display: flex;
+        justify-content: space-between;
+        height: 60px;
+        padding: 0.8em;
+        margin: 0 auto;
+        font-size: 1.2em;
+        color: #ffffff;
+      }
+      .footer-inner {
+        display: flex;
+        justify-content: end;
+        height: 60px;
+        padding: 0.8em;
+        margin: 0 auto;
+        font-size: 1.2em;
+        color: #ffffff;
+      }
+
+    </style>
+</head>
+<body>
+  <main id="body">
+    <div class="contents" >
+      <form id="form" name="timer">
+          <input type="text" id="min" list="select1" placeholder="min" autocomplete="off" value="">
+              <datalist id="select1">
+                <option value="3">
+                <option value="2">
+                <option value="1">
+              </datalist>
+          <input type="text" id="sec" list="select2" placeholder="sec" autocomplete="off" value="">
+            <datalist id="select2">
+              <option value="30">
+              <option value="20">
+              <option value="10">
+            </datalist>
+          <input type="button" id="start" value="start" onclick="cntStart()">&nbsp;
+          <input type="button" id="stop"value="stop & clear" onclick="cntStop()">
+      </form>
+    </div>
+  </main>
+</br>
+<footer id="footer">
+    <div class="footer-inner">
+        <p>&copy; 2022 YUSUKE SHINMEN</p>
+    <div>
+</footer>
+</body>
+</html>
